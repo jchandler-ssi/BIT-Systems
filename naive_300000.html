@@ -1,0 +1,61 @@
+<html>
+
+<body>
+<div id="totalTime"/>
+<div id="jsTime"/>
+
+<table id="theTable" border="1">
+  <thead>
+    <tr>
+      <th> ID </th>
+      <th> Timestamp </th>
+    <tr>
+  </thead>
+  <tbody id="theTableBody">
+  </tbody>
+</table>
+</body>
+
+<script language="javascript" type="text/javascript">
+
+function getData()
+{
+  var DATA_SIZE = 300000;
+
+  //var createData = function() {
+  var list = new Array(DATA_SIZE);
+  var now = new Date().getTime();
+
+  for (var i = 0; i < DATA_SIZE; i++)
+  {
+    list[i] = { id: i, timestamp: Math.round(Math.random() * now) };
+  }
+
+  return list;
+}
+
+window.onload = function()
+{
+  console.timeEnd("Total Time");
+  // TODO figure out a way to display times in document instead of console
+}
+
+console.time("Total Time");
+var myObjs = getData();
+var theTable = document.getElementById("theTable");
+console.time("JS Time");
+for(var i = 0, len = myObjs.length; i < len; i++)
+{
+  var newRow = theTable.insertRow();
+  var id = newRow.insertCell();
+  var timestamp = newRow.insertCell();
+  
+  id.innerHTML = myObjs[i]["id"];
+  timestamp.innerHTML = new Date(myObjs[i]["timestamp"]).toString();
+  
+}
+var jsTime = console.timeEnd("JS Time");
+
+</script>
+
+</html>

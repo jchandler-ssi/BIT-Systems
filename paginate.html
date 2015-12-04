@@ -1,0 +1,112 @@
+<html>
+
+<body>
+<div id="totalTime"/>
+<div id="jsTime"/>
+
+<bold>Goto ID: </bold><input type="number" id="goto" value="0"/>
+<bold>Number per page: </bold><input type="number" id="tableLength" value="40"/>
+<button onclick="refresh()">Go!</button>
+<table id="theTable" border="1">
+  <thead>
+    <tr>
+      <th> ID </th>
+      <th> Timestamp </th>
+    <tr>
+  </thead>
+  <tbody id="theTableBody">
+  </tbody>
+  <tbody>
+    <tr>
+      <td><button id="back">Back</button></td>
+      <td><button id="forward">Forward</button></td>
+  </tbody>
+</table>
+</body>
+
+<script language="javascript" type="text/javascript">
+
+/* Dynamically render a "page" of data from the complete dataset
+ * to avoid lengthy browser renders and JS engine object creation
+ * and document appends
+ */
+
+window.onload = function()
+{
+  console.timeEnd("Total Time");
+  // TODO figure out a way to display times in document instead of console
+}
+
+console.time("Total Time");
+
+var myObjs = getData();
+console.time("JS Time")
+refresh();
+console.timeEnd("JS Time")
+
+function getData()
+{
+  var DATA_SIZE = 300000;
+
+  //var createData = function() {
+  var list = new Array(DATA_SIZE);
+  var now = new Date().getTime();
+
+  for (var i = 0; i < DATA_SIZE; i++)
+  {
+    list[i] = { id: i, timestamp: Math.round(Math.random() * now) };
+  }
+
+  return list;
+}
+
+function refresh()
+{
+  //get user input and render the newly requested page
+  // TODO sanitize input
+  var start = parseInt(document.getElementById("goto").value);
+  var length = parseInt(document.getElementById("tableLength").value);
+  createCurrentView( myObjs, start, length );
+}
+
+function createCurrentView( objs, startingPoint, numItems )
+{
+  //don't increment past the size of the array
+  var stoppingPoint = ( ( startingPoint + numItems ) > objs.length ) ? objs.length : (startingPoint + numItems);
+  
+  var tableBody = document.getElementById("theTableBody");
+  
+  //Clear the current page contents from the table body
+  while (tableBody.lastChild)
+  {
+    tableBody.removeChild(tableBody.lastChild);
+  }
+  
+  for(var i = startingPoint; i < stoppingPoint; i++)
+  {
+    //Create the new row in total then append it to the table body
+    var newRow = document.createElement("tr");
+    var id = document.createElement("td");
+    var timestamp = document.createElement("td");
+    
+    id.innerHTML = myObjs[i]["id"];
+    timestamp.innerHTML = new Date(myObjs[i]["timestamp"]).toString();
+    
+    newRow.appendChild( id );
+    newRow.appendChild( timestamp );
+    tableBody.appendChild( newRow );
+  }
+  
+  //make sure that the forward and backward links do not go past the start or end of the array
+  var backStartingPoint = ( ( startingPoint - numItems ) < 0 ) ? 0 : (startingPoint - numItems);
+  var forwardStartingPoint = ( objs.length > stoppingPoint ) ? stoppingPoint : startingPoint ;
+  var back = document.getElementById("back");
+  var forward = document.getElementById("forward");
+  
+  forward.onclick = function() {createCurrentView( objs, forwardStartingPoint, numItems );};
+  back.onclick = function() {createCurrentView( objs, backStartingPoint, numItems );};
+}
+
+</script>
+
+</html>

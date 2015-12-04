@@ -1,0 +1,28 @@
+test environment:
+  Intel Core i7-4510U @ 2.00Ghz
+  8 GB DDR3 RAM
+  Kubuntu 15.04 x86_64 LiveUSB
+  Google Chrome 42.0.2311.152 (64-bit)
+
+naive_10000.html:
+  The average time taken by the JS code to generate the full table is about
+  700ms.  The average total render time is about 900ms.  These times are very
+  similar and within a reasonable time to expect a user to wait (although not
+  great).
+
+naive_300000.html
+  The average time taken by the JS code to generate the full table is about
+  20s.  The average total render time is about 27s.  These times show an
+  approximate linear relationship to the number of items added to and rendered
+  in the table.  They are also well beyond any reasonable time a user might be
+  expected to wait for results.  The ratio of total render time in the browser 
+  to the JS code time is also slightly greater.  This likely means that even
+  larger data sets might suffer from increasing render lag times.
+
+paginate.html
+  A quick solution is to hold all of the data in memory, but allow the user to
+  dynamically specify a subset of it to view.  With a default page size of 40,
+  the average time taken by the JS code is about 4ms and the average total
+  render time is about 250ms.  The user can choose what record is most important
+  to them and choose the number of records to display that meet their needs in
+  terms of performance and their ability to parse/understand the data.
